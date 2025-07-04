@@ -6,7 +6,7 @@ const {
   ButtonStyle,
 } = require('discord.js');
 
-const { setChannel, hasChannel } = require('../../utils/scrimChannelStore');
+const { setChannel, hasChannel } = require('../utils/scrimChannelStore');
 
 /**
  * 

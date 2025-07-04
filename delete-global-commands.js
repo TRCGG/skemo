@@ -11,6 +11,10 @@ const rest = new REST({ version: '10' }).setToken(process.env.TOKEN);
       Routes.applicationCommands(process.env.CLIENT_ID),
       { body: [] }
     );
+    await rest.put(
+      Routes.applicationGuildCommands(process.env.CLIENT_ID, process.env.GUILD_ID),
+      { body: [] }
+    );
     console.log('✅ 글로벌 명령어 삭제 완료!');
   } catch (error) {
     console.error('❌ 삭제 실패:', error);
