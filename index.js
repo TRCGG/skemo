@@ -1,7 +1,7 @@
 const { Client, GatewayIntentBits, Collection } = require('discord.js');
 require('dotenv').config();
 
-const loadCommands = require('./src/interactions/core/loadCommands');
+const loadCommands = require('./src/loadCommands');
 const interactionHandler = require('./src/interactions/core/interactionHandler');
 const replayListener = require('./src/listeners/replay');
 
@@ -26,6 +26,7 @@ loadCommands(client);
 
 // 인터랙션 처리
 client.on('interactionCreate', (interaction) => interactionHandler(interaction, client));
+// 메시지 생성 이벤트 리스너 등록
 client.on('messageCreate', (message) => replayListener.execute(message));
 
 client.login(process.env.TOKEN);

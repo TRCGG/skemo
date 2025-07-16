@@ -8,6 +8,10 @@ const {
 
 const { setChannel, hasChannel } = require('../utils/scrimChannelStore');
 
+/**
+ * @description DM 채널 생성 및 스크림 요청 확인 버튼 핸들러
+ */
+
 module.exports = (interaction) => {
   if (!interaction.isButton()) return;
 

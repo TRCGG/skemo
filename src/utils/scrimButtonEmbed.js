@@ -1,5 +1,10 @@
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } = require('discord.js');
 
+/**
+ * 
+ * @description 스크림 모집글을 위한 Embed를 생성하는 함수
+ */
+
 function buildScrimEmbed({
   clan,
   players,

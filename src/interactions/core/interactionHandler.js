@@ -3,8 +3,13 @@
 const submitReplayHandler = require('../submitReplayHandler');
 const scrimButtonHandler = require('../scrimButton');
 const dmConfirmHandler = require('../dmConfirm');
-const replayRegisterHandler = require('../replayRegisterHandler');
-const selectClanHandler = require('../selectClanHandler');
+const replayRegisterHandler = require('../replay/replayRegisterHandler');
+const selectClanHandler = require('../replay/selectClanHandler');
+
+/**
+ * 
+ * @description Discord 인터랙션 핸들러
+ */
 
 module.exports = (interaction, client) => {
   const customId = interaction.customId;

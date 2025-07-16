@@ -6,6 +6,10 @@ const isReplayFile = (attachment) => {
   return attachment.name && attachment.name.endsWith('.rofl');
 };
 
+/**
+ * @description 메시지 생성 이벤트 리스너 리플레이 파일 업로드 처리
+ */
+
 module.exports = {
   name: 'messageCreate',
   async execute(message) {
@@ -13,14 +17,6 @@ module.exports = {
 
     const attachment = message.attachments.find(isReplayFile);
     if (!attachment) return;
-
-    // 저장
-    tempReplayStore.set(message.author.id, {
-      messageId: message.id,
-      url: attachment.url,
-      name: attachment.name,
-      channelId: message.channel.id,
-    });
 
     // 버튼 전송
     const registerButton = new ButtonBuilder()
@@ -30,10 +26,20 @@ module.exports = {
 
     const row = new ActionRowBuilder().addComponents(registerButton);
 
-    await message.reply({
-      content: '📂 리플레이 파일이 업로드되었습니다. 아래 버튼을 눌러 등록을 계속하세요.',
+    const botMessage = await message.reply({
+      content: '📂 리플레이 파일이 업로드되었습니다. 아래 버튼을 눌러 상대한 클랜을 등록해주세요. ',
       components: [row],
       ephemeral: true,
     });
+
+    // 저장
+    tempReplayStore.set(message.author.id, {
+      messageId: message.id,
+      url: attachment.url,
+      name: attachment.name,
+      channelId: message.channel.id,
+      botMessageId: botMessage.id,
+    });
+
   },
 };

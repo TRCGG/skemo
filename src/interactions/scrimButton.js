@@ -10,7 +10,6 @@ const { createButtons, updateRecruitStatus } = require('../utils/scrimButtonEmbe
 
 /**
  * 
- * @param {*} interaction 
  * @description 스크림 모집 버튼 인터랙션 핸들러
  * @returns 
  */

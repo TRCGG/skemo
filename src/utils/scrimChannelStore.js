@@ -1,6 +1,10 @@
 // ✅ utils/scrimChannelStore.js
 const scrimChannelMap = new Map();
 
+/**
+ * @description 스크림 채널 키 생성 함수
+ */
+
 function getChannelKey(user1, user2) {
   const [a, b] = [user1, user2].sort();
   return `${a}_${b}`;

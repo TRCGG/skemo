@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
+const { SlashCommandBuilder} = require('discord.js');
 const { buildScrimEmbed, createButtons } = require('../utils/scrimButtonEmbed');
 
 /**

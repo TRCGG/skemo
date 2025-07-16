@@ -1,5 +1,9 @@
 const { ActionRowBuilder, StringSelectMenuBuilder } = require('discord.js');
 
+/**
+ * @description 상대한 클랜을 선택하는 Select Menu 핸들러
+ */
+
 module.exports = async (interaction) => {
   const customId = interaction.customId;
   const messageId = customId.split(':')[1];
