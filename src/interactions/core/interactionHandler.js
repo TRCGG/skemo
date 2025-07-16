@@ -1,6 +1,6 @@
 // src/interactions/core/interactionHandler.js
 
-const submitReplayHandler = require('../submitReplayHandler');
+// const submitReplayHandler = require('../submitReplayHandler');
 const scrimButtonHandler = require('../scrimButton');
 const dmConfirmHandler = require('../dmConfirm');
 const replayRegisterHandler = require('../replay/replayRegisterHandler');
@@ -17,7 +17,7 @@ module.exports = (interaction, client) => {
   // 🔹 모달 제출 처리
   if (interaction.isModalSubmit()) {
     if (customId.startsWith('submitReplay:')) {
-      return submitReplayHandler(interaction);
+      // return submitReplayHandler(interaction);
     }
 
     // 여기에 다른 모달 핸들러도 추가 가능
