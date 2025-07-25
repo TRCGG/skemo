@@ -18,7 +18,7 @@ module.exports = async (interaction) => {
   if (roles.length === 0) {
     return interaction.reply({
       content: '❌ 선택할 수 있는 클랜 역할이 없습니다.',
-      ephemeral: true,
+      flags: 64,
     });
   }
 
@@ -32,6 +32,6 @@ module.exports = async (interaction) => {
   await interaction.reply({
     content: '📌 상대한 클랜을 선택해주세요.',
     components: [row],
-    ephemeral: true,
+    flags: 64,
   });
 };

@@ -74,7 +74,7 @@ module.exports = (interaction) => {
       console.error('❌ DM 채널 생성 오류:', err);
       interaction.reply({
         content: '❌ 채널 생성 중 오류가 발생했습니다.',
-        ephemeral: true,
+        flags: 64,
       }).catch(console.error);
     });
 };

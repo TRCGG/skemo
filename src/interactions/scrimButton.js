@@ -23,7 +23,7 @@ module.exports = async (interaction) => {
   if (!embed) {
     await interaction.reply({
       content: '❌ 임베드가 없습니다.',
-      ephemeral: true,
+      flags: 64,
     });
     return;
   }
@@ -31,7 +31,7 @@ module.exports = async (interaction) => {
   if ((action === 'setOpen' || action === 'setClose') && interaction.user.id !== ownerId) {
     await interaction.reply({
       content: '❌ 이 버튼은 모집글 작성자만 사용할 수 있습니다.',
-      ephemeral: true,
+      flags: 64,
     });
     return;
   }
@@ -69,7 +69,7 @@ module.exports = async (interaction) => {
     if (ownerId === requesterId) {
       return interaction.reply({
         content: '자기 글에는 신청할 수 없습니다.',
-        ephemeral: true,
+        flags: 64,
       });
     }
 
@@ -90,18 +90,18 @@ module.exports = async (interaction) => {
       });
       await interaction.reply({
         content: '📨 신청 요청을 보냈습니다!',
-        ephemeral: true,
+        flags: 64,
       });
     } catch (err) {
       await interaction.reply({
         content: '⚠️ 상대방에게 DM을 보낼 수 없습니다.',
-        ephemeral: true,
+        flags: 64,
       });
     }
   } else {
     await interaction.reply({
       content: '❌ 알 수 없는 동작입니다.',
-      ephemeral: true,
+      flags: 64,
     });
   }
 };
