@@ -6,6 +6,7 @@ const {
 } = require('discord.js');
 const { setRecruitment, deleteRecruitment } = require('../data/recruitStore');
 const { createButtons, updateRecruitStatus } = require('../utils/scrimButtonEmbed');
+const { getFormatTimestamp } = require('../utils/stringUtils');
 
 
 /**
@@ -38,7 +39,8 @@ module.exports = async (interaction) => {
 
   if (action === 'setOpen' || action === 'setClose') {
     const isOpen = action === 'setOpen';
-    const newStatusText = isOpen ? '🟢 모집중' : '🔴 모집종료';
+    const timeStr = getFormatTimestamp();
+    const newStatusText = isOpen ? `🟢 모집중(${timeStr})` : `🔴 모집종료(${timeStr})`;
 
     const updatedEmbed = updateRecruitStatus(embed, newStatusText);
 

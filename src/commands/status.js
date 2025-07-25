@@ -26,6 +26,9 @@ module.exports = {
       lines.push(`<@${userId}> - [모집글 보기](${link}) 🕒 작성시각: ${timestamp}`);
     }
 
-    await interaction.reply(lines.join("\n"));
+    await interaction.reply({
+      content: lines.join('\n'),
+      flags: 64, // 
+    });
   },
 };
