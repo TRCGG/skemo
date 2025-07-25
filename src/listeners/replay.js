@@ -29,14 +29,18 @@ module.exports = {
     const botMessage = await message.reply({
       content: '📂 리플레이 파일이 업로드되었습니다. 아래 버튼을 눌러 상대한 클랜을 등록해주세요. ',
       components: [row],
-      ephemeral: true,
+      flags: 64,
     });
+
+    const fileName = attachment.name.endsWith('.rofl')
+      ? attachment.name.slice(0, -5)
+      : attachment.name;
 
     // 저장
     tempReplayStore.set(message.author.id, {
       messageId: message.id,
       url: attachment.url,
-      name: attachment.name,
+      name: fileName,
       channelId: message.channel.id,
       botMessageId: botMessage.id,
     });
