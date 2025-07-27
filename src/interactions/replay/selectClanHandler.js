@@ -1,6 +1,6 @@
 const tempReplayStore = require('../../data/tempReplayStore');
-const httpClient = require('../../utils/clientUtils');
-const { getClanRoleName } = require('../../utils/stringUtils');
+const { getClanRoleNameByRoleId } = require('../../utils/stringUtils');
+const clanMatchService = require('../../service/clanMatchService');
 
 /**
  * @description 리플레이 등록을 위한 클랜 선택 핸들러
@@ -44,6 +44,17 @@ module.exports = async (interaction) => {
 
   try {
 
+    const replayData = {
+      fileUrl: replayInfo.url,
+      fileName: replayInfo.name,
+      createUser: member.displayName,
+      game_type: 1, //일반
+      guildId: guildId,
+    }
+
+    // 리플레이 데이터 등록
+    await clanMatchService.insertReplay(replayData);
+
     const clanMatchData = {
       file_name: replayInfo.name,
       game_type: 3, //스크림
@@ -52,34 +63,13 @@ module.exports = async (interaction) => {
     }
 
     // 클랜 매치 등록
-    const resClanMatch = await httpClient.post('/clanMatch', clanMatchData);
-    if (resClanMatch.status === "error") {
-      throw new Error('clanMatch 등록 실패'); 
-    }
+    await clanMatchService.insertClanMatch(clanMatchData);
 
-    const replayData = {
-      fileUrl: replayInfo.url,
-      fileName: replayInfo.name,
-      createUser: member.displayName,
-      game_type: 1, //일반
-    }
-
-    const resReplay = await httpClient.post(`/replay/${guildId}`, replayData);
-    if (resReplay.status === "error") {
-      throw new Error('replay 등록 실패');
-    }
-
-    await interaction.deleteReply({
-      content: `✅ 리플레이가 성공적으로 등록되었습니다!`,
-      components: [],
-      flags: 64 // 임베드 숨김
-    });
-
-    const ourClanName = getClanRoleName(interaction, memberClanRoleId);
-    const opponentClanName = getClanRoleName(interaction, selectedRoleId);
+    const ourClanName = getClanRoleNameByRoleId(interaction, memberClanRoleId);
+    const opponentClanName = getClanRoleNameByRoleId(interaction, selectedRoleId);
     
     await channel.send({
-      content: `✅${member.displayName} 등록성공: 🏆${ourClanName} vs ${opponentClanName}}`,
+      content: `✅${member.displayName} 등록완료: ${ourClanName}🏆 vs ${opponentClanName}`,
     });
   } catch (err) {
     console.error('등록 실패:', err);
