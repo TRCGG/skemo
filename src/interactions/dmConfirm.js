@@ -65,7 +65,7 @@ module.exports = (interaction) => {
         }, 1000 * 60 * 60 * 12); // 12시간
 
         return interaction.update({
-          content: `✅ 대화 채널 생성 완료: <#${channel.id}>`,
+          content: `✅ 대화 채널 생성 완료: <#${channel.id}> 12시간 후 채널은 자동 삭제됩니다.`,
           components: [],
         });
       });
