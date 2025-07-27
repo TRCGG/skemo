@@ -41,6 +41,7 @@ module.exports = (interaction) => {
       return guild.channels.create({
         name: `스크림-${owner.user.username}-${requester.user.username}`.toLowerCase(),
         type: ChannelType.GuildText,
+        parent: "1389140189674340462", 
         permissionOverwrites: [
           {
             id: guild.roles.everyone,
