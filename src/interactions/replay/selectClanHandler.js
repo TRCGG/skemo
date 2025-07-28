@@ -19,6 +19,7 @@ module.exports = async (interaction) => {
   const selectedRoleId = interaction.values[0];
 
   const replayInfo = tempReplayStore.get(userId);
+  if(replayInfo?.timeout) clearTimeout(replayInfo.timeout)
 
   if (!replayInfo) {
     return interaction.reply({
@@ -67,9 +68,11 @@ module.exports = async (interaction) => {
 
     const ourClanName = getClanRoleNameByRoleId(interaction, memberClanRoleId);
     const opponentClanName = getClanRoleNameByRoleId(interaction, selectedRoleId);
+    await botMessage.delete();
+    await interaction.deleteReply({});
     
     await channel.send({
-      content: `✅${member.displayName} 등록완료: ${ourClanName}🏆 vs ${opponentClanName}`,
+      content: `✅${member.displayName} 등록완료: ${replayInfo.name}  ${ourClanName}🏆 vs ${opponentClanName}`,
     });
   } catch (err) {
     console.error('등록 실패:', err);
@@ -78,7 +81,6 @@ module.exports = async (interaction) => {
       content: `❌ ${member.displayName} 님이 등록에 실패 했습니다. 다시 리플레이 파일을 등록해주세요 이유: ${err.message}`,
     });
   } finally {
-    await botMessage.delete();
     tempReplayStore.delete(userId);
   }
 };

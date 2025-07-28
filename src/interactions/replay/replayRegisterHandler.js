@@ -8,10 +8,15 @@ module.exports = async (interaction) => {
   const customId = interaction.customId;
   const messageId = customId.split(':')[1];
 
+  const myClanRole = interaction.member.roles.cache.find(role => 
+    role.name.startsWith('clan_')
+  );
+
   const roles = interaction.guild.roles.cache
-    .filter(role => role.name.startsWith('clan_'))
+    .filter(role => role.name.startsWith('clan_') &&
+    (!myClanRole || role.id !== myClanRole.id))
     .map(role => ({
-      label: role.name,
+      label: role.name.replace(/^clan_/, ''),
       value: role.id,
     }));
 
