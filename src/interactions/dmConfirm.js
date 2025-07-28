@@ -48,7 +48,7 @@ module.exports = async (interaction) => {
       }
 
       return guild.channels.create({
-        name: `스크림-${owner.user.username}-${requester.user.username}`.toLowerCase(),
+        name: `스크림-${owner.user.displayName}-${requester.user.displayName}`.toLowerCase(),
         type: ChannelType.GuildText,
         parent: "1389140189674340462", 
         permissionOverwrites: [
@@ -75,8 +75,20 @@ module.exports = async (interaction) => {
         // }, 1000 * 60 * 60 * 24); // 24시간
         }, 1000 * 60 * 60 * 1); // 1시간
 
+        // ✅ 채널에 안내 메시지 전송
+        channel.send('🙌 **상호 존중하며 대화를 나눠주세요!**');
+
+        // 상호간 DM 발송
+        requester.send({
+          content: `📢 <@${owner.id}>님과의 스크림 대화 채널이 생성되었습니다: <#${channel.id}>`,
+        }).catch(() => console.warn(`❌ requester (${requester.id})에게 DM 전송 실패`));
+
+        // owner.send({
+        //   content: `📢 <@${requester.id}>님과의 스크림 대화 채널이 생성되었습니다: <#${channel.id}>`,
+        // }).catch(() => console.warn(`❌ owner (${owner.id})에게 DM 전송 실패`));
+
         return interaction.update({
-          content: `✅ 대화 채널 생성 완료: <#${channel.id}> 12시간 후 채널은 자동 삭제됩니다.`,
+          content: `✅ 대화 채널 생성 완료: <#${channel.id}> 24시간 후 채널은 자동 삭제됩니다.`,
           components: [],
         });
       });
