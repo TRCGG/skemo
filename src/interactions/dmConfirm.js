@@ -12,13 +12,22 @@ const { setChannel, hasChannel } = require('../utils/scrimChannelStore');
  * @description DM 채널 생성 및 스크림 요청 확인 버튼 핸들러
  */
 
-module.exports = (interaction) => {
+module.exports = async (interaction) => {
   if (!interaction.isButton()) return;
 
-  const [action, requesterId] = interaction.customId.split(':');
+  const [action, requesterId, guildId] = interaction.customId.split(':');
   if (action !== 'confirmScrim') return;
 
-  const guild = interaction.guild;
+  let guild;
+  try {
+    guild = await interaction.client.guilds.fetch(guildId);
+  } catch (err) {
+    console.error("❌ guild fetch 실패:", err);
+    return interaction.reply({
+      content: "❌ 서버 정보를 불러올 수 없습니다.",
+      ephemeral: true,
+    });
+  }
   const ownerId = interaction.user.id;
 
   Promise.all([
@@ -63,7 +72,8 @@ module.exports = (interaction) => {
         setTimeout(() => {
           channel.delete('자동 만료된 스크림 대화 채널')
             .catch(console.error);
-        }, 1000 * 60 * 60 * 12); // 12시간
+        // }, 1000 * 60 * 60 * 24); // 24시간
+        }, 1000 * 60 * 60 * 1); // 1시간
 
         return interaction.update({
           content: `✅ 대화 채널 생성 완료: <#${channel.id}> 12시간 후 채널은 자동 삭제됩니다.`,

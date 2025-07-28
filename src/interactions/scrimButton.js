@@ -79,12 +79,13 @@ module.exports = async (interaction) => {
 
     // DM 전송
     try {
+      const customId = `confirmScrim:${requesterId}:${interaction.guildId}`; // guildId 포함
       await ownerUser.send({
         content: `📬 <@${requesterId}>님이 스크림 신청을 보냈습니다.`,
         components: [
           new ActionRowBuilder().addComponents(
             new ButtonBuilder()
-              .setCustomId(`confirmScrim:${requesterId}`)
+              .setCustomId(customId)
               .setLabel('✅ 대화채널 생성')
               .setStyle(ButtonStyle.Primary)
           ),
@@ -94,6 +95,7 @@ module.exports = async (interaction) => {
         content: '📨 신청 요청을 보냈습니다!',
         flags: 64,
       });
+      
     } catch (err) {
       await interaction.reply({
         content: '⚠️ 상대방에게 DM을 보낼 수 없습니다.',
