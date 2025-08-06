@@ -6,7 +6,7 @@ const isReplayFile = (attachment) => {
   return attachment.name && attachment.name.endsWith('.rofl');
 };
 
-const TIMEOUT_MS = 1000 * 60 * 60; // 60분
+const TIMEOUT_MS = parseInt(process.env.REPLAY_TIMEOUT_MS) || 1000 * 60 * 60; // 60분
 
 /**
  * @description 메시지 생성 이벤트 리스너 리플레이 파일 업로드 처리
