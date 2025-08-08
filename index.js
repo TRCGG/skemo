@@ -4,6 +4,7 @@ require('dotenv').config();
 const loadCommands = require('./src/loadCommands');
 const interactionHandler = require('./src/interactions/core/interactionHandler');
 const replayListener = require('./src/listeners/replay');
+const logger = require('./src/utils/logger');
 
 const client = new Client({
   intents: [
@@ -18,6 +19,8 @@ const client = new Client({
 client.commands = new Collection();
 
 client.once('ready', () => {
+  logger.setClient(client);
+  if (process.env.LOG_CHANNEL_ID) logger.setChannel(process.env.LOG_CHANNEL_ID);
   console.log(`✅ ${client.user.tag} is online!`);
 });
 

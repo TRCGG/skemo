@@ -1,4 +1,4 @@
-const tempReplayStore = require('../../data/tempReplayStore');
+const tempReplayStore = require('../../stores/tempReplayStore');
 const { getClanRoleNameByRoleId } = require('../../utils/stringUtils');
 const clanMatchService = require('../../service/clanMatchService');
 

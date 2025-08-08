@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
-const recruitStore = require("../data/recruitStore");
+const recruitStore = require("../stores/recruitStore");
 
 /**
  * @description 현재 모집 중인 유저 목록을 보여주는 명령어

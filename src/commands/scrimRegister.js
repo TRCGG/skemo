@@ -1,15 +1,19 @@
-const { SlashCommandBuilder} = require('discord.js');
+// src/commands/scrimRegister.js
+const { SlashCommandBuilder } = require('discord.js');
 const { buildScrimEmbed, createButtons } = require('../utils/scrimButtonEmbed');
-const { setScrim } = require('../data/scrimStore');
+const scrimStore = require('../stores/scrimStore');
+const Scrim = require('../model/scrim');
+const logger = require('../utils/logger');
+const { bus, EVENTS } = require('../utils/eventBus');
 
-/**
- * @description 스크림 모집 명령어
- */
+const clamp = (s, n) => String(s ?? '').trim().slice(0, n);
+
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('스크림등록')
     .setDescription('스크림 등록 글을 생성합니다.')
-    .addStringOption(o => o.setName('클랜명').setDescription('소속 클랜명').setRequired(true))
+    .addStringOption(o => o.setName('title').setDescription('제목').setRequired(true))
+    .addStringOption(o => o.setName('clan').setDescription('소속 클랜명').setRequired(true))
     .addStringOption(o => o.setName('nick1').setDescription('탑_닉네임#태그 1').setRequired(true))
     .addStringOption(o => o.setName('nowtier1').setDescription('탑_현재_티어_1').setRequired(true))
     .addStringOption(o => o.setName('prevtier1').setDescription('탑_이전_최고 티어_1').setRequired(true))
@@ -29,49 +33,85 @@ module.exports = {
     .addStringOption(o => o.setName('etc').setDescription('피리어스 여부 혹은 기타').setRequired(false)),
 
   async execute(interaction) {
-    const clan = interaction.options.getString('클랜명');
-    const time = interaction.options.getString('time');
-    const etc = interaction.options.getString('etc') || '없음';
+    try {
+      const ownerId = interaction.user.id;
+      const guildId = interaction.guildId;
+      const owner = interaction.user;
 
-    const players = [];
-    for (let i = 1; i <= 5; i++) {
-      const nick = interaction.options.getString(`nick${i}`);
-      const nowTier = interaction.options.getString(`nowtier${i}`);
-      const prevTier = interaction.options.getString(`prevtier${i}`);
+      // 최대 3개 제한
+      const myScrims = scrimStore.findByOwner(ownerId);
+      if (myScrims.length >= 3) {
+        return interaction.reply({
+          content: '❌ 스크림 등록은 3개 초과하여 등록할 수 없습니다.',
+          ephemeral: true,
+        });
+      }
 
-      players.push({
-        nick,
-        nowTier,
-        prevTier,
+      // 입력값 확보 + 정리
+      const title = clamp(interaction.options.getString('title'), 80);
+      const clan  = clamp(interaction.options.getString('clan'), 40);
+      const time  = clamp(interaction.options.getString('time'), 60);
+      const etc   = clamp(interaction.options.getString('etc') || '없음', 120);
+
+      const players = [];
+      for (let i = 1; i <= 5; i++) {
+        players.push({
+          nick:     clamp(interaction.options.getString(`nick${i}`), 40),
+          nowTier:  clamp(interaction.options.getString(`nowtier${i}`), 20),
+          prevTier: clamp(interaction.options.getString(`prevtier${i}`), 20),
+        });
+      }
+
+      // 임베드 + 버튼
+      const embed = buildScrimEmbed({
+        title, clan, players, time, etc,
+        status: '❌ 모집 대기 중',
+        author: owner,
       });
+      const buttons = createButtons(ownerId, false); // setOpen / setClose / applyScrim
+
+      const msg = await interaction.reply({
+        embeds: [embed],
+        components: [buttons],
+        fetchReply: true,
+      });
+
+      // Scrim 모델 생성
+      const scrim = new Scrim({
+        messageId: msg.id,
+        channelId: msg.channel.id,
+        guildId,           
+        ownerId,
+        owner,
+        title,
+        clan,
+        players,
+        time,
+        etc,
+        status: Scrim.Status.WAIT,
+        createdAt: Date.now(),
+        appliedBy: [],
+      });
+
+      // 저장 + 로깅 + 이벤트
+      scrimStore.add(scrim);
+      logger.info('스크림 생성', { guildId, host: ownerId, title });
+      bus.emit(EVENTS.SCRIM_CREATED, {
+        guildId,
+        scrimId: scrim.messageId,
+        ownerId,
+        scrim,
+      });
+
+      // (선택) 사용성: 메시지 링크 알려주기
+      // await interaction.followUp({ content: `✅ 등록 완료: https://discord.com/channels/${guildId}/${msg.channel.id}/${msg.id}`, ephemeral: true });
+
+    } catch (err) {
+      logger.error?.('스크림 등록 실패', { err: String(err) });
+      return interaction.reply({
+        content: `❌ 등록 중 오류가 발생했습니다: ${String(err?.message || err)}`,
+        ephemeral: true,
+      }).catch(() => {});
     }
-
-    const embed = buildScrimEmbed({
-      clan,
-      players,
-      time,
-      etc,
-      status: '❌ 모집 대기 중',
-      author: interaction.user,
-    });
-
-    const buttons = createButtons(interaction.user.id, false);
-
-    const msg = await interaction.reply({
-      embeds: [embed],
-      components: [buttons],
-    });
-
-    setScrim(msg.id, {
-      status: '모집중',
-      ownerId: interaction.user.id,
-      clan: clan,
-      time: time,
-      etc: etc,
-      players,
-      messageId: msg.id,
-      channelId: msg.channel.id,
-    });
-
   },
 };

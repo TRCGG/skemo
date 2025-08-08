@@ -5,20 +5,21 @@ const { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } = require('
  * @description 스크림 모집글을 위한 Embed를 생성하는 함수
  */
 
-function buildScrimEmbed({
+const buildScrimEmbed = ({
+  title,
   clan,
   players,
   time,
   etc,
   status = '❌ 모집 대기 중',
   author,
-}) {
+}) => {
   const playerLines = players
     .map((p, i) => `${i + 1}. ${p.nick} / ${p.nowTier} / ${p.prevTier}`)
     .join('\n');
 
   return new EmbedBuilder()
-    .setTitle('🎯 스크림 모집글')
+    .setTitle(`${title}`)
     .setColor(0x00BFFF)
     .setDescription(
       `📌 **현재 상태**\n${status}\n\n` +
@@ -39,29 +40,30 @@ function createButtons(ownerId, isOpen) {
       .setCustomId(`setOpen:${ownerId}`)
       .setLabel('🟢 모집중')
       .setStyle(ButtonStyle.Success)
-      .setDisabled(isOpen),    // 모집중이면 비활성화
+      .setDisabled(isOpen),   // 모집중이면 비활성화
 
     new ButtonBuilder()
       .setCustomId(`setClose:${ownerId}`)
-      .setLabel('🔴 모집종료')
-      .setStyle(ButtonStyle.Danger)
-      .setDisabled(!isOpen),   // 모집중 아니면 비활성화
+      .setLabel('🔴 삭제하기')
+      .setStyle(ButtonStyle.Danger),
+      // .setDisabled(isOpen),  
 
     new ButtonBuilder()
-      .setCustomId(`requestScrim:${ownerId}`)
+      .setCustomId(`applyScrim:${ownerId}`)
       .setLabel('🟡 신청하기')
       .setStyle(ButtonStyle.Primary)
       .setDisabled(!isOpen)
+    
   );
 }
 
 /**
  * Embed description 내 '📌 현재 상태' 라인을 새로운 텍스트로 교체
  * @param {Embed} embed - 기존 embed
- * @param {string} newStatusText - "🟢 모집중" 또는 "🔴 모집종료"
+ * @param {string} newStatusText - "🟢 모집중"
  * @returns {EmbedBuilder} 수정된 embed
  */
-function updateRecruitStatus(embed, newStatusText) {
+function updateEmbedDesc(embed, newStatusText) {
   const newEmbed = EmbedBuilder.from(embed);
   const originalDesc = newEmbed.data.description || "";
 
@@ -74,4 +76,4 @@ function updateRecruitStatus(embed, newStatusText) {
   return newEmbed;
 }
 
-module.exports = { buildScrimEmbed, createButtons, updateRecruitStatus };
+module.exports = { buildScrimEmbed, createButtons, updateEmbedDesc };

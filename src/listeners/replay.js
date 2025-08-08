@@ -1,5 +1,5 @@
 const { ButtonBuilder, ButtonStyle, ActionRowBuilder } = require('discord.js');
-const tempReplayStore = require('../data/tempReplayStore');
+const tempReplayStore = require('../stores/tempReplayStore');
 
 // 리플레이 확장자 검사
 const isReplayFile = (attachment) => {

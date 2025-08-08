@@ -1,10 +1,11 @@
 // src/interactions/core/interactionHandler.js
 
 // const submitReplayHandler = require('../submitReplayHandler');
-const scrimButtonHandler = require('../scrimButton');
-const dmConfirmHandler = require('../dmConfirm');
+const scrimButtonHandler = require('../scrimButtonHandler');
+const dmConfirmHandler = require('../dmConfirmHandler');
 const replayRegisterHandler = require('../replay/replayRegisterHandler');
 const selectClanHandler = require('../replay/selectClanHandler');
+const selectOwnScrimHandler = require('../selectOwnScrimHandler');
 
 /**
  * 
@@ -27,7 +28,7 @@ module.exports = (interaction, client) => {
 
   // 🔹 버튼 인터랙션 처리
   if (interaction.isButton()) {
-    if (customId.startsWith('setOpen:') || customId.startsWith('setClose:') || customId.startsWith('requestScrim:')) {
+    if (customId.startsWith('setOpen:') || customId.startsWith('setClose:') || customId.startsWith('applyScrim:')) {
       return scrimButtonHandler(interaction);
     }
 
@@ -47,6 +48,10 @@ module.exports = (interaction, client) => {
   if (interaction.isStringSelectMenu()) {
     if (interaction.customId.startsWith('selectClan:')) {
       return selectClanHandler(interaction);
+    }
+
+    if (interaction.customId.startsWith('selectOwnScrim:')){
+      return selectOwnScrimHandler(interaction);
     }
   }
 
