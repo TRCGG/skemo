@@ -38,7 +38,7 @@ class ScrimStore {
     this.store.clear();
   }
 
-  updateStatus(messageId, newStatus, byUserId) {
+  updateStatus(messageId, newStatus) {
     const scrim = this.get(messageId);
     if (!scrim) return { ok: false, error: 'NOT_FOUND' };
     try {
@@ -47,14 +47,13 @@ class ScrimStore {
 
       // 로그
       logger.info('스크림 상태 변경', {
-        messageId, guildId: scrim.guildId, from, to, by: byUserId
+        messageId, guildId: scrim.guildId, from, to, 
       });
 
       // 이벤트 발행
       bus.emit(EVENTS.SCRIM_STATUS_CHANGED, {
         guildId: scrim.guildId,
         scrimId: scrim.messageId,
-        byUserId,
         from, to,
         scrim,
       });

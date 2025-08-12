@@ -36,7 +36,7 @@ module.exports = {
     try {
       const ownerId = interaction.user.id;
       const guildId = interaction.guildId;
-      const owner = interaction.user;
+      const author = interaction.user;
 
       // 최대 3개 제한
       const myScrims = scrimStore.findByOwner(ownerId);
@@ -65,8 +65,8 @@ module.exports = {
       // 임베드 + 버튼
       const embed = buildScrimEmbed({
         title, clan, players, time, etc,
-        status: '❌ 모집 대기 중',
-        author: owner,
+        status: Scrim.Status.WAIT,
+        author: author,
       });
       const buttons = createButtons(ownerId, false); // setOpen / setClose / applyScrim
 
@@ -82,7 +82,7 @@ module.exports = {
         channelId: msg.channel.id,
         guildId,           
         ownerId,
-        owner,
+        author,
         title,
         clan,
         players,
@@ -95,11 +95,11 @@ module.exports = {
 
       // 저장 + 로깅 + 이벤트
       scrimStore.add(scrim);
-      logger.info('스크림 생성', { guildId, host: ownerId, title });
+      logger.info('스크림 생성', { guildId, host: author.displayName, title });
       bus.emit(EVENTS.SCRIM_CREATED, {
         guildId,
         scrimId: scrim.messageId,
-        ownerId,
+        author,
         scrim,
       });
 

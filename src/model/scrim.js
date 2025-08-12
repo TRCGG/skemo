@@ -2,10 +2,10 @@
 
 class Scrim {
   static Status = {
-    WAIT: 'WAIT',        // 모집 대기
-    OPEN: 'OPEN',        // 모집중
-    CANCEL: 'CANCEL',    // 취소
-    CONFIRMED: 'CONFIRMED', // 매칭 확정
+    WAIT: '❌ 모집 대기',        // 모집 대기
+    OPEN: '🟢 모집중 ',        // 모집중
+    CANCEL: '🛑 취소',    // 취소
+    CONFIRMED: '🤝 매칭되었습니다', // 매칭 확정
   };
 
 
@@ -14,7 +14,7 @@ class Scrim {
     channelId,
     guildId,
     ownerId,
-    owner,
+    author,
     title,
     clan,
     players = [],
@@ -29,7 +29,7 @@ class Scrim {
     this.guildId = guildId;
     this.ownerId = ownerId;
 
-    this.owner = owner;
+    this.author = author; // User 객체
     this.title = title;
     this.clan = clan;
     this.players = players;

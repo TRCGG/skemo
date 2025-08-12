@@ -11,8 +11,9 @@ const buildScrimEmbed = ({
   players,
   time,
   etc,
-  status = '❌ 모집 대기 중',
+  status = '❌ 모집 대기',
   author,
+  appliedByCount,
 }) => {
   const playerLines = players
     .map((p, i) => `${i + 1}. ${p.nick} / ${p.nowTier} / ${p.prevTier}`)
@@ -26,10 +27,11 @@ const buildScrimEmbed = ({
       `🏷️ **클랜명**: ${clan}\n\n` +
       `${playerLines}\n\n` +
       `⏰ **가능 시간**\n${time}\n\n` +
-      `📝 **기타**\n${etc || '없음'}`
+      `📝 **기타**\n${etc || '없음'}\n\n` + 
+      ` **신청자**: ${appliedByCount || 0} 명`
     )
     .setFooter({
-      text: `작성자: ${author.tag}`,
+      text: `작성자: ${author.displayName}`,
       iconURL: author.displayAvatarURL(),
     });
 }
@@ -44,7 +46,7 @@ function createButtons(ownerId, isOpen) {
 
     new ButtonBuilder()
       .setCustomId(`setClose:${ownerId}`)
-      .setLabel('🔴 삭제하기')
+      .setLabel('🔴 취소하기')
       .setStyle(ButtonStyle.Danger),
       // .setDisabled(isOpen),  
 
