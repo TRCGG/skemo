@@ -4,7 +4,7 @@ const scrimStore = require("../stores/scrimStore");
 
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName("모집현황")
+    .setName("스크림모집현황")
     .setDescription("현재 모집 중인 스크림 목록을 보여줍니다."),
 
   async execute(interaction) {

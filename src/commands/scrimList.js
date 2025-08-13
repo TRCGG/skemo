@@ -9,7 +9,7 @@ function isWaiting(scrim) {
 
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName('모집목록')
+    .setName('스크림 전체 목록[관리자]')
     .setDescription('현재 올라온 스크림 등록글을 상태별로 보여줍니다. (모집중/모집대기)')
     .setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild),
 

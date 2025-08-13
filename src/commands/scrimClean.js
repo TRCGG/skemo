@@ -4,7 +4,7 @@ const scrimStore = require('../stores/scrimStore');
 
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName('모집정리')
+    .setName('스크림 정리[관리자]')
     .setDescription('깨진 모집 링크(삭제된 채널/메시지)를 정리합니다.')
     .setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild)
     .addStringOption(o =>
@@ -17,7 +17,7 @@ module.exports = {
     ),
 
   async execute(interaction) {
-    await interaction.deferReply({ ephemeral: true });
+    await interaction.deferReply();
 
     const scope = interaction.options.getString('대상') ?? 'open';
     let candidates = scope === 'all'
