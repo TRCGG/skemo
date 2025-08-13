@@ -4,7 +4,7 @@ const scrimStore = require('../stores/scrimStore');
 
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName('스크림 정리[관리자]')
+    .setName('스크림정리')
     .setDescription('깨진 모집 링크(삭제된 채널/메시지)를 정리합니다.')
     .setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild)
     .addStringOption(o =>
