@@ -47,6 +47,10 @@ class Scrim {
     this.appliedBy = appliedBy;
   }
 
+  get jumpLink() {
+    return `https://discord.com/channels/${this.guildId}/${this.channelId}/${this.messageId}`;
+  }
+
   get statusBadge() {
     return Scrim.StatusBadge[this.status] ?? this.status;
   }
