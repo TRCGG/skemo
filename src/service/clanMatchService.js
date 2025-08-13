@@ -44,7 +44,7 @@ class ClanMatchService {
    * @description 클랜 매치 데이터를 조회합니다.
    * @returns 
    */
-  async getClanMatchs(game_type, our_clan_name, our_clan_role_id, opponent_clan_role_id) {
+  async getClanMatches(game_type, our_clan_name, our_clan_role_id, opponent_clan_role_id) {
     if (!game_type || !our_clan_role_id) {
       throw new Error("game_type과 our_clan_role_id는 필수입니다.");
     }

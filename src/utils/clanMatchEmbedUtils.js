@@ -24,7 +24,7 @@ const getClanMatchEmbed = (clanData, our_clan_name) => {
   const recentMatches = clanData.recentClanMatch.slice(0, 10);
 
   const embed = new EmbedBuilder()
-    .setTitle(`🏆 ${our_clan_name} 클랜 전적`)
+    .setTitle(`${our_clan_name} 클랜 전적`)
     .setColor("Gold")
     .addFields(
       {
@@ -56,7 +56,7 @@ const getClanMatchEmbed = (clanData, our_clan_name) => {
                     const timeStr = stringUtils.getFormatTimestamp(m.create_date, "month");
                     const gameType = stringUtils.getFormatGameType(m.game_type);
                     const gameResult = stringUtils.getFormatGameResult(m.game_result);
-                    return `\`${timeStr}\` ${gameResult} ${m.opponent_clan_name} - ${gameType} ${m.file_name}`
+                    return `\`${timeStr}\` ${gameResult} ${m.opponent_clan_name} (${gameType})`
 
                   }
                 )

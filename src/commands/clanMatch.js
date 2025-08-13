@@ -26,7 +26,7 @@ module.exports = {
 
     const ourClanRoleId = ourClanRole.id;
     const ourClanName = ourClanRole.name.replace(/^clan_/, '');
-    const results = await clanMatchService.getClanMatchs(
+    const results = await clanMatchService.getClanMatches(
       gameType,
       ourClanName,
       ourClanRoleId,
