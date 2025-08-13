@@ -1,13 +1,19 @@
 // src/data/scrim.js
 
 class Scrim {
-  static Status = {
+  static Status = Object.freeze({
+    WAIT: 'WAIT',   // 모집 대기
+    OPEN: 'OPEN',         // 모집중
+    CLOSED: 'CLOSED',     // 모집 종료
+    CONFIRMED: 'CONFIRMED', // 확정
+  });
+
+  static StatusBadge  = Object.freeze({
     WAIT: '❌ 모집 대기',        // 모집 대기
     OPEN: '🟢 모집중 ',        // 모집중
     CANCEL: '🛑 취소',    // 취소
-    CONFIRMED: '🤝 매칭되었습니다', // 매칭 확정
-  };
-
+    CONFIRMED: '🤝 매칭확정', // 매칭 확정
+  });
 
   constructor({ 
     messageId,
@@ -39,6 +45,10 @@ class Scrim {
     this.status = status;
     this.createdAt = createdAt;
     this.appliedBy = appliedBy;
+  }
+
+  get statusBadge() {
+    return Scrim.StatusBadge[this.status] ?? this.status;
   }
 
   getApplicantCount() {

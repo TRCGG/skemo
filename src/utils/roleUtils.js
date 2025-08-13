@@ -21,11 +21,13 @@ async function removeOpenRoleIfNoOpen(client, guildId, ownerId) {
     const hasOpen = scrimStore.findByOwner(ownerId).some(s => s.status === Scrim.Status.OPEN);
     if (hasOpen) return;
 
+    // 역할 제거
     const member = await guild.members.fetch(ownerId).catch(() => null);
+    console.log(`Removing role ${role.name} from ${member?.user.tag || ownerId}`);
     if (member?.roles.cache.has(role.id)) {
       await member.roles.remove(role).catch(() => null);
     }
-  } catch {}
+  } catch (err){ console.error('removeOpenRoleIfNoOpen error:', err); }
 }
 
 module.exports = { removeOpenRoleIfNoOpen };

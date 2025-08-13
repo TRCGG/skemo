@@ -7,10 +7,8 @@ const {
 } = require('discord.js');
 
 const { buildScrimEmbed, createButtons, updateEmbedDesc } = require('../utils/scrimButtonEmbed');
-const { getFormatTimestamp } = require('../utils/stringUtils');
 const scrimStore = require('../stores/scrimStore');
 const Scrim = require('../model/scrim');
-const {removeOpenRoleIfNoOpen} = require('../utils/roleUtils');
 
 module.exports = async (interaction) => {
   if (!interaction.isButton()) return;
@@ -50,9 +48,8 @@ module.exports = async (interaction) => {
         }
 
         // 임베드/버튼 갱신 (간단히 상태 텍스트만 교체)
-        const timeStr = getFormatTimestamp();
-        const newStatusText = `${Scrim.Status.OPEN}(${timeStr})`;
-        const updatedEmbed = updateEmbedDesc(embed, newStatusText);
+        const newStatusCode = Scrim.Status.OPEN;
+        const updatedEmbed = updateEmbedDesc(embed, newStatusCode);
         const buttons = createButtons(ownerId, true);
 
         await interaction.update({ embeds: [updatedEmbed], components: [buttons] });

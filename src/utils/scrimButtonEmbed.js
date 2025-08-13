@@ -1,9 +1,14 @@
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } = require('discord.js');
+const Scrim = require('../model/scrim');
+const { getFormatTimestamp } = require('../utils/stringUtils');
 
 /**
  * 
  * @description 스크림 모집글을 위한 Embed를 생성하는 함수
  */
+
+// 코드값 → 뱃지 텍스트 변환
+const toBadge = (statusCode) => Scrim.StatusBadge[statusCode] ?? String(statusCode);
 
 const buildScrimEmbed = ({
   title,
@@ -11,7 +16,7 @@ const buildScrimEmbed = ({
   players,
   time,
   etc,
-  status = '❌ 모집 대기',
+  status = Scrim.Status.WAIT, // 기본값: 모집 대기
   author,
   appliedByCount,
 }) => {
@@ -23,7 +28,7 @@ const buildScrimEmbed = ({
     .setTitle(`${title}`)
     .setColor(0x00BFFF)
     .setDescription(
-      `📌 **현재 상태**\n${status}\n\n` +
+      `📌 **현재 상태**\n${toBadge(status ?? Scrim.Status.WAITING)}\n\n` +
       `🏷️ **클랜명**: ${clan}\n\n` +
       `${playerLines}\n\n` +
       `⏰ **가능 시간**\n${time}\n\n` +
@@ -62,16 +67,20 @@ function createButtons(ownerId, isOpen) {
 /**
  * Embed description 내 '📌 현재 상태' 라인을 새로운 텍스트로 교체
  * @param {Embed} embed - 기존 embed
- * @param {string} newStatusText - "🟢 모집중"
+ * @param {string} newStatusCode - "🟢 모집중"
  * @returns {EmbedBuilder} 수정된 embed
  */
-function updateEmbedDesc(embed, newStatusText) {
+function updateEmbedDesc(embed, newStatusCode) {
   const newEmbed = EmbedBuilder.from(embed);
   const originalDesc = newEmbed.data.description || "";
 
+  // 상태 뱃지로 변환
+  const newStatusText = toBadge(newStatusCode);
+  const timeStr = getFormatTimestamp();
+
   const updatedDesc = originalDesc.replace(
     /📌 \*\*현재 상태\*\*\n.+?\n/,
-    `📌 **현재 상태**\n${newStatusText}\n`
+    `📌 **현재 상태**\n${newStatusText}(${timeStr})\n`
   );
 
   newEmbed.setDescription(updatedDesc);

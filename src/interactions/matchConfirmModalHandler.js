@@ -11,10 +11,16 @@ const scrimStore = require('../stores/scrimStore');
 const { buildMatchEmbed } = require('../utils/scrimMatchEmbed');
 const { updateEmbedDesc } = require('../utils/scrimButtonEmbed');
 const { removeOpenRoleIfNoOpen } = require('../utils/roleUtils');
+const Scrim = require('../model/scrim');
 
 const ANNOUNCE_CHANNEL_ID = process.env.CONFIRMED_CH_ID;  // 공지 채널 ID
 const MODAL_ID_PREFIX = 'matchConfirmModal';
 const MODAL_TIME_INPUT_ID = 'confirm_time';
+
+/**
+ * 
+ * 스크림 매칭 확정 시간 입력시
+ */
 
 module.exports = async (interaction) => {
   if (!interaction.isModalSubmit()) return;
@@ -93,15 +99,15 @@ module.exports = async (interaction) => {
     console.warn('확정 공지 실패:', e?.message || e);
   }
 
-  // 확정되면 스크림 등록자들 역할 제거.
+  // 3) 두 스크림은 메모리에서 제거 (이후 취소해도 원본 글은 그대로 둠)
+  scrimStore.delete(hostScrimId);
+  scrimStore.delete(guestScrimId);
+
+  // 4) 확정되면 스크림 등록자들 역할 제거.
   await Promise.all([
     removeOpenRoleIfNoOpen(interaction.client, hostScrim.guildId, hostScrim.ownerId),
     removeOpenRoleIfNoOpen(interaction.client, guestScrim.guildId, guestScrim.ownerId),
   ]);
-
-  // 4) 두 스크림은 메모리에서 제거 (이후 취소해도 원본 글은 그대로 둠)
-  scrimStore.delete(hostScrimId);
-  scrimStore.delete(guestScrimId);
 
   // 완료 응답
   await interaction.editReply({ content: '🎉 확정 처리 완료!' });
@@ -116,7 +122,7 @@ async function markScrimPostMatched(client, scrim) {
   const msg = await channel.messages.fetch(scrim.messageId);
 
   const origEmbed = msg.embeds?.[0];
-  const newEmbed = origEmbed ? updateEmbedDesc(origEmbed, '🤝 매칭되었습니다') : null;
+  const newEmbed = origEmbed ? updateEmbedDesc(origEmbed, Scrim.Status.CONFIRMED) : null;
   const greenEmbed = newEmbed ? EmbedBuilder.from(newEmbed).setColor(Colors.Green) : null;
 
   const disabledRows = msg.components?.length

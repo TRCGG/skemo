@@ -7,7 +7,6 @@ const {
 
 const scrimStore = require('../stores/scrimStore');
 const { buildScrimEmbed, createButtons } = require('../utils/scrimButtonEmbed');
-const Scrim = require('../model/scrim');
 
 /**
  * @desc 신청자가 자신의 스크림글 중에 선택하여 상대방에게 신청

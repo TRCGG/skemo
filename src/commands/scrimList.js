@@ -1,11 +1,7 @@
 // src/commands/모집목록.js
 const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
 const scrimStore = require('../stores/scrimStore'); // getAll(), isOpen(scrim)
-
-function isWaiting(scrim) {
-  if (!scrim || typeof scrim.status !== 'string') return false;
-  return scrim.status.includes('대기'); // 예: '❌ 모집 대기'
-}
+const Scrim = require('../model/scrim'); // Scrim.Status
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -20,8 +16,8 @@ module.exports = {
     }
 
     // 분류
-    const opens = all.filter(s => scrimStore.isOpen?.(s));
-    const waits = all.filter(s => isWaiting(s));
+    const opens = scrimStore.getOpen();
+    const waits = scrimStore.getAll().filter(s => s.status === Scrim.Status.WAIT);
 
     // 오래된 → 최신(아래)
     const byOldFirst = arr => [...arr].sort((a, b) => (a.createdAt ?? 0) - (b.createdAt ?? 0));
