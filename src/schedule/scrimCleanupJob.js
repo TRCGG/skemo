@@ -3,6 +3,7 @@ const cron = require('node-cron');
 const scrimStore = require('../stores/scrimStore');
 
 function registerScrimCleanupJob() {
+  console.log("scrimCleanUp job registered");
   // 매일 새벽 3시 실행
   cron.schedule('0 3 * * *', () => {
     const removed = scrimStore.deleteOlderThan14Days();
