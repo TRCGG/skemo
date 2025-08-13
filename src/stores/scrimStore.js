@@ -1,14 +1,10 @@
-
 const Scrim = require('../model/scrim');
 const logger = require('../utils/logger');
-const {bus, EVENTS} = require('../utils/eventBus');
+const { bus, EVENTS } = require('../utils/eventBus');
 
-// src/data/scrimStore.js
 class ScrimStore {
   constructor() {
-    if (ScrimStore._instance) {
-      return ScrimStore._instance; // 싱글톤 보장
-    }
+    if (ScrimStore._instance) return ScrimStore._instance;
     this.store = new Map(); // messageId -> Scrim
     ScrimStore._instance = this;
   }
@@ -26,8 +22,7 @@ class ScrimStore {
   }
 
   findByOwner(ownerId) {
-    return Array.from(this.store.values())
-      .filter(s => s.ownerId === ownerId);
+    return Array.from(this.store.values()).filter(s => s.ownerId === ownerId);
   }
 
   getAll() {
@@ -38,9 +33,12 @@ class ScrimStore {
     this.store.clear();
   }
 
+  size() {
+    return this.store.size;
+  }
+
   /**
-   * 
-   * @desc 스크림 상태를 업데이트
+   * 스크림 상태 업데이트
    */
   updateStatus(messageId, newStatus) {
     const scrim = this.get(messageId);
@@ -49,16 +47,13 @@ class ScrimStore {
       const { from, to } = scrim.updateStatus(newStatus);
       this.add(scrim); // 저장 갱신
 
-      // 로그
-      logger.info('스크림 상태 변경', {
-        messageId, guildId: scrim.guildId, from, to, 
-      });
+      logger.info('스크림 상태 변경', { messageId, guildId: scrim.guildId, from, to });
 
-      // 이벤트 발행
       bus.emit(EVENTS.SCRIM_STATUS_CHANGED, {
         guildId: scrim.guildId,
         scrimId: scrim.messageId,
-        from, to,
+        from,
+        to,
         scrim,
       });
 
@@ -69,8 +64,7 @@ class ScrimStore {
   }
 
   /**
-   * 
-   * @desc 스크림에 신청
+   * 스크림 신청
    */
   apply(messageId, userId) {
     const scrim = this.get(messageId);
@@ -83,7 +77,11 @@ class ScrimStore {
     scrim.appliedBy.push(userId);
     this.add(scrim);
 
-    logger.info('스크림 신청 접수', { scrimId: scrim.messageId, by: userId, count: scrim.appliedBy.length });
+    logger.info('스크림 신청 접수', {
+      scrimId: scrim.messageId,
+      by: userId,
+      count: scrim.appliedBy.length,
+    });
 
     bus.emit(EVENTS.APPLICATION_RECEIVED, {
       guildId: scrim.guildId,
@@ -97,43 +95,38 @@ class ScrimStore {
   }
 
   /**
-   * 
-   * @desc 스크림이 모집 중인지 확인
+   * 모집중 여부
+   * - 상태는 enum(코드값)으로 **정확히 일치** 비교 권장
    */
   isOpen(scrim) {
-    if (!scrim || typeof scrim.status !== 'string') return false;
-    const s = scrim.status;
-    return s.includes(Scrim.Status.OPEN);
+    return scrim?.status === Scrim.Status.OPEN;
   }
 
   /**
-   * 
-   * @desc 모집중인 스크림 목록을 반환합니다.
+   * 모집중 목록
    */
   getOpen() {
     return this.getAll().filter(scrim => this.isOpen(scrim));
   }
 
-    /**
+  /**
    * 14일 지난 글 삭제
    */
   deleteOlderThan14Days() {
     const now = Date.now();
-    const limitMs = 14 * 24 * 60 * 60 * 1000; // 14일
+    const limitMs = 14 * 24 * 60 * 60 * 1000;
     let removed = 0;
 
-    for (const s of store.values()) {
-      if (!s?.createdAt) continue; // createdAt 없으면 패스
+    // ✅ this.store 사용
+    for (const s of this.store.values()) {
+      if (!s?.createdAt) continue;
       if (now - s.createdAt > limitMs) {
-        store.delete(s.messageId);
+        this.store.delete(s.messageId);
         removed++;
       }
     }
-
-    return removed; // 지운 개수 반환
+    return removed;
   }
-
 }
 
-// 항상 같은 인스턴스를 import해서 씀!
 module.exports = new ScrimStore();
