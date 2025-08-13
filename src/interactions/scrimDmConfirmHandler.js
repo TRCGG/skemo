@@ -29,11 +29,11 @@ module.exports = async (interaction) => {
   console.log('guestScrim', guestScrim);
 
   if (!hostScrim || !guestScrim) {
-    return interaction.reply({ content: "❌ 스크림 정보를 찾을 수 없습니다.", ephemeral: true });
+    return interaction.reply({ content: "❌ 스크림 정보를 찾을 수 없습니다.", flags: 64 });
   }
 
   if (interaction.user.id !== hostScrim.ownerId) {
-    return interaction.reply({ content: "❌ 이 요청을 처리할 권한이 없습니다.", ephemeral: true });
+    return interaction.reply({ content: "❌ 이 요청을 처리할 권한이 없습니다.", flags: 64 });
   }
 
   // 길드 fetch
@@ -42,7 +42,7 @@ module.exports = async (interaction) => {
     guild = await interaction.client.guilds.fetch(hostScrim.guildId);
   } catch (err) {
     console.error("❌ guild fetch 실패:", err);
-    return interaction.reply({ content: "❌ 서버 정보를 불러올 수 없습니다.", ephemeral: true });
+    return interaction.reply({ content: "❌ 서버 정보를 불러올 수 없습니다.", flags: 64 });
   }
 
   

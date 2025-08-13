@@ -43,7 +43,7 @@ module.exports = {
       if (myScrims.length >= 3) {
         return interaction.reply({
           content: '❌ 스크림 등록은 3개 초과하여 등록할 수 없습니다.',
-          ephemeral: true,
+          flags: 64,
         });
       }
 
@@ -110,7 +110,7 @@ module.exports = {
       logger.error?.('스크림 등록 실패', { err: String(err) });
       return interaction.reply({
         content: `❌ 등록 중 오류가 발생했습니다: ${String(err?.message || err)}`,
-        ephemeral: true,
+        flags: 64,
       }).catch(() => {});
     }
   },

@@ -18,13 +18,13 @@ module.exports = async (interaction) => {
   const hostScrim = scrimStore.get(hostScrimId);
   const guestScrim = scrimStore.get(guestScrimId);
   if (!hostScrim || !guestScrim) {
-    return interaction.reply({ content: '❌ 스크림 정보를 찾을 수 없습니다.', ephemeral: true });
+    return interaction.reply({ content: '❌ 스크림 정보를 찾을 수 없습니다.', flags: 64 });
   }
 
   // 권한: 두 등록자만 가능
   const userId = interaction.user.id;
   if (![hostScrim.ownerId, guestScrim.ownerId].includes(userId)) {
-    return interaction.reply({ content: '❌ 확정할 권한이 없습니다.', ephemeral: true });
+    return interaction.reply({ content: '❌ 확정할 권한이 없습니다.', flags: 64 });
   }
 
   // 모달 띄우기 (원본 메시지 id를 customId에 포함)
