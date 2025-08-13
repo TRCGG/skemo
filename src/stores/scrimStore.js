@@ -38,6 +38,10 @@ class ScrimStore {
     this.store.clear();
   }
 
+  /**
+   * 
+   * @desc 스크림 상태를 업데이트
+   */
   updateStatus(messageId, newStatus) {
     const scrim = this.get(messageId);
     if (!scrim) return { ok: false, error: 'NOT_FOUND' };
@@ -64,6 +68,10 @@ class ScrimStore {
     }
   }
 
+  /**
+   * 
+   * @desc 스크림에 신청
+   */
   apply(messageId, userId) {
     const scrim = this.get(messageId);
     if (!scrim) return { ok: false, reason: 'NOT_FOUND' };
@@ -86,6 +94,43 @@ class ScrimStore {
     });
 
     return { ok: true, scrim };
+  }
+
+  /**
+   * 
+   * @desc 스크림이 모집 중인지 확인
+   */
+  isOpen(scrim) {
+    if (!scrim || typeof scrim.status !== 'string') return false;
+    const s = scrim.status;
+    return s.includes(Scrim.Status.OPEN);
+  }
+
+  /**
+   * 
+   * @desc 모집중인 스크림 목록을 반환합니다.
+   */
+  getOpen() {
+    return this.getAll().filter(scrim => this.isOpen(scrim));
+  }
+
+    /**
+   * 14일 지난 글 삭제
+   */
+  deleteOlderThan14Days() {
+    const now = Date.now();
+    const limitMs = 14 * 24 * 60 * 60 * 1000; // 14일
+    let removed = 0;
+
+    for (const s of store.values()) {
+      if (!s?.createdAt) continue; // createdAt 없으면 패스
+      if (now - s.createdAt > limitMs) {
+        store.delete(s.messageId);
+        removed++;
+      }
+    }
+
+    return removed; // 지운 개수 반환
   }
 
 }
