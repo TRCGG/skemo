@@ -5,6 +5,9 @@ const loadCommands = require('./src/loadCommands');
 const interactionHandler = require('./src/interactions/core/interactionHandler');
 const replayListener = require('./src/listeners/replay');
 const logger = require('./src/utils/logger');
+const { registerScrimCleanupJob } = require('./src/schedule/scrimCleanupJob');
+
+registerScrimCleanupJob();
 
 const client = new Client({
   intents: [
