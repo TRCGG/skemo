@@ -173,7 +173,7 @@ module.exports = async (interaction) => {
             ],
           });
 
-          return interaction.reply({ content: '📨 신청 요청을 보냈습니다!', flags: 64 });
+          return interaction.reply({ content: '📨 신청 요청을 보냈습니다! 상대방이 수락하면 알림과 대화채널이 생성됩니다.', flags: 64 });
         } catch (err) {
           console.error('DM 전송 실패:', err);
           // DM 실패: 상대가 DM 차단/서버 DM 비허용일 가능성 높음
