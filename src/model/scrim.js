@@ -4,7 +4,7 @@ class Scrim {
   static Status = Object.freeze({
     WAIT: 'WAIT',   // 모집 대기
     OPEN: 'OPEN',         // 모집중
-    CLOSED: 'CLOSED',     // 모집 종료
+    CANCEL: 'CANCEL',     // 모집 종료
     CONFIRMED: 'CONFIRMED', // 확정
   });
 

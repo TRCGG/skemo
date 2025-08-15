@@ -12,6 +12,7 @@ const { buildMatchEmbed } = require('../utils/scrimMatchEmbed');
 const { updateEmbedDesc } = require('../utils/scrimButtonEmbed');
 const { removeOpenRoleIfNoOpen } = require('../utils/roleUtils');
 const Scrim = require('../model/scrim');
+const logger = require('../utils/logger');
 
 const ANNOUNCE_CHANNEL_ID = process.env.CONFIRMED_CH_ID;  // 공지 채널 ID
 const MODAL_ID_PREFIX = 'matchConfirmModal';
@@ -66,6 +67,13 @@ module.exports = async (interaction) => {
         content: `🎉 매칭이 확정되었습니다.${confirmTime ? `\n🕒 확정 시간: ${confirmTime}` : ''}`,
         components: disabledRow ? [disabledRow] : [],
       });
+
+      logger.info("스크림 확정", {
+        title: `${hostScrim.title} vs ${guestScrim.title}`,
+        host: `<@${hostScrim.ownerId}>`,
+        guest: `<@${guestScrim.ownerId}>`,
+        confirmTime,
+      });
     }
   } catch (e) {
     console.warn('원본 메시지 비활성화 실패:', e?.message || e);
@@ -78,9 +86,6 @@ module.exports = async (interaction) => {
       const announceChannel = await guild.channels.fetch(ANNOUNCE_CHANNEL_ID).catch(() => null);
       if (announceChannel && announceChannel.type === ChannelType.GuildText) {
         const vsEmbed = buildMatchEmbed(hostScrim, guestScrim);
-        if (confirmTime) {
-          try { vsEmbed.addFields({ name: '확정 시간', value: confirmTime, inline: false }); } catch {}
-        }
 
         const cancelBtn = new ButtonBuilder()
           // store 를 지웠을 때도 권한 판별 가능하도록 두 등록자 ID를 customId에 넣음

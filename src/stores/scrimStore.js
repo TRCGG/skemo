@@ -40,22 +40,22 @@ class ScrimStore {
   /**
    * 스크림 상태 업데이트
    */
-  updateStatus(messageId, newStatus) {
+  updateScrimStatus(messageId, newStatus) {
     const scrim = this.get(messageId);
     if (!scrim) return { ok: false, error: 'NOT_FOUND' };
     try {
       const { from, to } = scrim.updateStatus(newStatus);
       this.add(scrim); // 저장 갱신
 
-      logger.info('스크림 상태 변경', { messageId, guildId: scrim.guildId, from, to });
+      // logger.info('스크림 상태 변경', { messageId, guildId: scrim.guildId, from, to });
 
-      bus.emit(EVENTS.SCRIM_STATUS_CHANGED, {
-        guildId: scrim.guildId,
-        scrimId: scrim.messageId,
-        from,
-        to,
-        scrim,
-      });
+      // bus.emit(EVENTS.SCRIM_STATUS_CHANGED, {
+      //   guildId: scrim.guildId,
+      //   scrimId: scrim.messageId,
+      //   from,
+      //   to,
+      //   scrim,
+      // });
 
       return { ok: true, from, to, scrim };
     } catch (e) {
@@ -78,8 +78,9 @@ class ScrimStore {
     this.add(scrim);
 
     logger.info('스크림 신청 접수', {
-      scrimId: scrim.messageId,
-      by: userId,
+      title: `[${scrim.title}](${scrim.jumpLink})`,
+      host: `<@${scrim.ownerId}>`,
+      by: `<@${userId}>`,
       count: scrim.appliedBy.length,
     });
 

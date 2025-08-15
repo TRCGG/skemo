@@ -35,7 +35,7 @@ module.exports = async (interaction) => {
     switch (action) {
       // ✅ 모집 시작
       case 'setOpen': {
-        const res = scrimStore.updateStatus(messageId, Scrim.Status.OPEN);
+        const res = scrimStore.updateScrimStatus(messageId, Scrim.Status.OPEN);
         if (!res.ok) return interaction.reply({ content: res.error || '상태 변경 실패', flags: 64 });
 
         // 역할 부여(선택)

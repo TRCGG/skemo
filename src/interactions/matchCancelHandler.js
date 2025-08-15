@@ -1,5 +1,6 @@
 // src/interactions/matchCancelHandler.js
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
+const logger = require('../utils/logger');
 
 /**
  * 
@@ -55,6 +56,8 @@ module.exports = async (interaction) => {
         embeds: msg.embeds,        // VS 임베드는 유지
         components: [disabled],    // 취소 버튼 비활성화
       });
+
+      logger.info('스크림 확정 취소', { message: `<#${msg.url}>`});
 
       return interaction.update({ content: '취소 처리 완료.', components: [], flags: 64 });
     } catch (e) {

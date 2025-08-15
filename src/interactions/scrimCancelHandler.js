@@ -1,4 +1,5 @@
 const scrimStore = require('../stores/scrimStore');
+const logger = require('../utils/logger');
 const { removeOpenRoleIfNoOpen } = require('../utils/roleUtils');
 
 /**
@@ -25,6 +26,7 @@ module.exports = async (interaction) => {
   } catch (e) {
     console.error('스크림 삭제 실패:', e?.message || e);
   } finally {
+    logger.info('스크림 취소', { title: `${ownerScrim.title}`, host: `<@${ownerScrim.ownerId}>`});
     scrimStore.delete(ownerScrim.messageId);
     await removeOpenRoleIfNoOpen(interaction.client, ownerScrim.guildId, ownerId);
   }

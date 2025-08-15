@@ -95,7 +95,7 @@ module.exports = {
 
       // 저장 + 로깅 + 이벤트
       scrimStore.add(scrim);
-      logger.info('스크림 생성', { guildId, host: author.displayName, title });
+      logger.info('스크림 생성', { title:`[${title}](${scrim.jumpLink})`, host: `<@${author.id}>` });
       bus.emit(EVENTS.SCRIM_CREATED, {
         guildId,
         scrimId: scrim.messageId,
@@ -107,7 +107,6 @@ module.exports = {
       // await interaction.followUp({ content: `✅ 등록 완료: https://discord.com/channels/${guildId}/${msg.channel.id}/${msg.id}`, ephemeral: true });
 
     } catch (err) {
-      logger.error?.('스크림 등록 실패', { err: String(err) });
       return interaction.reply({
         content: `❌ 등록 중 오류가 발생했습니다: ${String(err?.message || err)}`,
         flags: 64,

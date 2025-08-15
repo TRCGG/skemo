@@ -23,8 +23,8 @@ function log(level, msg, obj) {
   if (!shouldLog(level)) return;
   const line = obj ? `${msg} ${JSON.stringify(obj)}` : msg;
   // 콘솔
-  const fn = console[level] || console.log;
-  fn(`[${level}] ${line}`);
+  // const fn = console[level] || console.log;
+  // fn(`[${level}] ${line}`);
   // 채널
   postToChannel(level, line);
 }
