@@ -1,6 +1,6 @@
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } = require('discord.js');
 const Scrim = require('../model/scrim');
-const { getFormatTimestamp } = require('../utils/stringUtils');
+const { getFormatTimestamp, buildEmojiPlayerLines } = require('../utils/stringUtils');
 
 /**
  * 
@@ -20,17 +20,14 @@ const buildScrimEmbed = ({
   author,
   appliedByCount,
 }) => {
-  const playerLines = players
-    .map((p, i) => `${i + 1}. ${p.nick} / ${p.nowTier} / ${p.prevTier}`)
-    .join('\n');
 
   return new EmbedBuilder()
     .setTitle(`${title}`)
     .setColor(0x00BFFF)
     .setDescription(
-      `📌 **현재 상태**\n${toBadge(status ?? Scrim.Status.WAITING)}\n\n` +
+      `📌 **현재 상태**\n${toBadge(status ?? Scrim.Status.WAIT)}\n\n` +
       `🏷️ **클랜명**: ${clan}\n\n` +
-      `${playerLines}\n\n` +
+      `${buildEmojiPlayerLines(players)}\n\n` +
       `⏰ **가능 시간**\n${time}\n\n` +
       `📝 **기타**\n${etc || '없음'}\n\n` + 
       ` **신청자**: ${appliedByCount || 0} 명`

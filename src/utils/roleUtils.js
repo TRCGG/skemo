@@ -23,7 +23,6 @@ async function removeOpenRoleIfNoOpen(client, guildId, ownerId) {
 
     // 역할 제거
     const member = await guild.members.fetch(ownerId).catch(() => null);
-    console.log(`Removing role ${role.name} from ${member?.user.tag || ownerId}`);
     if (member?.roles.cache.has(role.id)) {
       await member.roles.remove(role).catch(() => null);
     }

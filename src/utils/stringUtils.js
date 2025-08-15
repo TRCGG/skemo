@@ -3,20 +3,20 @@
  */
 
 /**
- * @param {*} interaction 
- * @param {*} role_id 
+ * @param {*} interaction
+ * @param {*} role_id
  * @description 클랜 역할 이름을 반환합니다.
- * @returns 
+ * @returns
  */
 const getClanRoleNameByRoleId = (interaction, role_id) => {
   const role = interaction.guild.roles.cache.get(role_id);
   if (role) {
-    const clanRolename = role.name.replace(/^clan_/, '');
+    const clanRolename = role.name.replace(/^clan_/, "");
     return clanRolename;
   } else {
-    return 'unknown_clan';
+    return "unknown_clan";
   }
-}
+};
 
 /**
  * @description 포맷된 시간 문자열을 반환합니다.
@@ -32,18 +32,17 @@ const getFormatTimestamp = (timestamp = Date.now(), formatType = "hour") => {
     return `${month}-${day}`;
   }
 
-
   return d.toLocaleTimeString("ko-KR", {
     hour: "2-digit",
     minute: "2-digit",
   });
-}
+};
 
 /**
- * 
- * @param {*} gameType 
+ *
+ * @param {*} gameType
  * @description 게임 타입을 문자열로 변환합니다.
- * @returns 
+ * @returns
  */
 const getFormatGameType = (gameType) => {
   switch (gameType) {
@@ -56,13 +55,13 @@ const getFormatGameType = (gameType) => {
     default:
       return "unknown Type";
   }
-}
+};
 
 /**
- * 
- * @param {*} gameResult 
+ *
+ * @param {*} gameResult
  * @description 게임 결과를 문자열로 변환합니다.
- * @returns 
+ * @returns
  */
 const getFormatGameResult = (gameResult) => {
   switch (gameResult) {
@@ -73,11 +72,42 @@ const getFormatGameResult = (gameResult) => {
     default:
       return "error";
   }
+};
+
+/**
+ * 플레이어 정보를 포맷하여 문자열로 반환
+ * @param {*} p
+ * @returns
+ */
+function formatPlayerLine(p) {
+  if (!p) return `- / - / -`;
+  const nick = p.nick || "-";
+  const nowTier = p.nowTier || "-";
+  const prevTier = p.prevTier || "-";
+  return `${nick} / ${nowTier} / ${prevTier}`;
+}
+
+/**
+ * 플레이어 목록을 이모지 붙여서 라인별로 출력
+ * @param {Array} players - 플레이어 배열
+ */
+function buildEmojiPlayerLines(players) {
+  const laneEmojis = [
+    { emoji: "<:pg_top:1405574084368138260>", idx: 0 },
+    { emoji: "<:pg_jug:1405574176156287078>", idx: 1 },
+    { emoji: "<:pg_mid:1405574178303901847>", idx: 2 },
+    { emoji: "<:pg_adc:1405574174105272403>", idx: 3 },
+    { emoji: "<:pg_sup:1405574181084598312>", idx: 4 },
+  ];
+  return laneEmojis
+    .map(({ emoji, idx }) => `${emoji} ${formatPlayerLine(players[idx])}`)
+    .join("\n");
 }
 
 module.exports = {
-  getClanRoleNameByRoleId, 
+  getClanRoleNameByRoleId,
   getFormatTimestamp,
   getFormatGameType,
   getFormatGameResult,
-}
+  buildEmojiPlayerLines,
+};
