@@ -104,10 +104,17 @@ function buildEmojiPlayerLines(players) {
     .join("\n");
 }
 
+function encodeGuildId(guild_id) {
+  if (!guild_id) throw new Error('길드 ID가 비어있습니다');
+  return Buffer.from(guild_id.toString(), 'utf8').toString('base64');
+};
+
+
 module.exports = {
   getClanRoleNameByRoleId,
   getFormatTimestamp,
   getFormatGameType,
   getFormatGameResult,
   buildEmojiPlayerLines,
+  encodeGuildId,
 };

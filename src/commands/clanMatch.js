@@ -1,5 +1,8 @@
-const { SlashCommandBuilder, StringSelectMenuBuilder, ActionRowBuilder } = require("discord.js");
-const clanMatchService = require("../service/clanMatchService");
+const { SlashCommandBuilder } = require("discord.js");
+const ClanMatchController = require('../controllers/clanMatch.controller');
+
+// 컨트롤러 인스턴스 1개만 사용
+const clanMatchController = new ClanMatchController();
 
 /**
  * @description 클랜 매치 검색 명령어
@@ -26,15 +29,12 @@ module.exports = {
 
     const ourClanRoleId = ourClanRole.id;
     const ourClanName = ourClanRole.name.replace(/^clan_/, '');
-    const results = await clanMatchService.getClanMatches(
-      gameType,
-      ourClanName,
-      ourClanRoleId,
-      // opponent_clan_role_id
-    );
-
-    await interaction.reply({
-      embeds: [results],
+    
+    return clanMatchController.handleGetClanMatches(interaction, {
+      game_type: gameType,               // 배열 그대로 전달 (client가 join 처리)
+      our_clan_name: ourClanName,
+      our_clan_role_id: ourClanRoleId,
+      // opponent_clan_role_id: 선택 시 여기에 넣기
     });
   },
 };
