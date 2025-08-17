@@ -28,9 +28,7 @@ module.exports = async (interaction) => {
 
   try {
     const hostScrim = scrimStore.get(hostScrimId);
-    console.log('hostScrim', hostScrim);
     const guestScrim = scrimStore.get(guestScrimId);
-    console.log('guestScrim', guestScrim);
   
     if (!hostScrim || !guestScrim) {
       return interaction.followUp({ content: "❌ 스크림 정보를 찾을 수 없습니다."});

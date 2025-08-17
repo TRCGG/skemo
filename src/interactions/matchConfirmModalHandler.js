@@ -10,9 +10,11 @@ const {
 const scrimStore = require('../stores/scrimStore');
 const { buildMatchEmbed } = require('../utils/scrimMatchEmbed');
 const { updateEmbedDesc } = require('../utils/scrimButtonEmbed');
-const { removeOpenRoleIfNoOpen } = require('../utils/roleUtils');
+const { removeOpenRoleIfNoOpen, getClanRoleIdByUserId } = require('../utils/roleUtils');
 const Scrim = require('../model/scrim');
 const logger = require('../utils/logger');
+const ClanMatchController = require('../controllers/clanMatch.controller');
+
 
 const ANNOUNCE_CHANNEL_ID = process.env.CONFIRMED_CH_ID;  // 공지 채널 ID
 const MODAL_ID_PREFIX = 'matchConfirmModal';
@@ -22,6 +24,7 @@ const MODAL_TIME_INPUT_ID = 'confirm_time';
  * 
  * 스크림 매칭 확정 시간 입력시
  */
+const clanMatchController = new ClanMatchController();
 
 module.exports = async (interaction) => {
   if (!interaction.isModalSubmit()) return;
@@ -47,6 +50,24 @@ module.exports = async (interaction) => {
 
   await interaction.deferReply({ flags: 64 });
 
+  const hostClanRoleId = await getClanRoleIdByUserId(interaction.guild, hostScrim.ownerId);
+  const guestClanRoleId = await getClanRoleIdByUserId(interaction.guild, guestScrim.ownerId);
+
+  let matchCount = 0;
+  try {
+    matchCount = await clanMatchController.handleGetClanMatchCount(interaction, hostClanRoleId, guestClanRoleId);
+    if( matchCount === 0) {
+      matchCount = 1;
+    } else {
+      matchCount += 1; // 다음 매치 번호
+    }
+
+  } catch (err) {
+    console.error('클랜 매치 카운트 조회 실패:', err);
+    return interaction.editReply({ content: `❌ 클랜 매치 카운트 조회 실패: ${err?.message || 'unknown error'}` });
+  }
+
+
   // 1) 각 스크림 원본 글을 "매칭되었습니다"로 수정 + 버튼 비활성화
   await Promise.all([
     markScrimPostMatched(interaction.client, hostScrim).catch(() => null),
@@ -64,7 +85,7 @@ module.exports = async (interaction) => {
         : null;
 
       await msg.edit({
-        content: `🎉 매칭이 확정되었습니다.${confirmTime ? `\n🕒 확정 시간: ${confirmTime}` : ''}`,
+        content: `🎉 매칭이 확정되었습니다.${confirmTime ? `\n🕒 확정 시간: ${confirmTime}` : ''}\n⚔️ ${matchCount}번째 매치`,
         components: disabledRow ? [disabledRow] : [],
       });
 
@@ -94,7 +115,7 @@ module.exports = async (interaction) => {
           .setStyle(ButtonStyle.Danger);
 
         await announceChannel.send({
-          content: `✅ **스크림 매칭이 확정되었습니다!**${confirmTime ? `\n🕒 ${confirmTime}` : ''}`,
+          content: `✅ **스크림 매칭이 확정되었습니다!**${confirmTime ? `\n🕒 ${confirmTime}` : ''}\n⚔️ ${matchCount}번째 매치`,
           embeds: [vsEmbed],
           components: [new ActionRowBuilder().addComponents(cancelBtn)],
         });

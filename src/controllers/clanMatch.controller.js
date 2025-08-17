@@ -10,6 +10,7 @@ class ClanMatchController {
     this.handleGetClanMatches = this.handleGetClanMatches.bind(this);
 
     this.handleDeleteClanMatch = this.handleDeleteClanMatch.bind(this);
+    this.handleGetClanMatchCount = this.handleGetClanMatchCount.bind(this);
   }
 
   /**
@@ -108,6 +109,21 @@ class ClanMatchController {
     } catch (err) {
       console.error('클랜 매치 조회 실패:', err);
       return interaction.editReply({ content: `❌ ${err?.message || '클랜 매치 조회 실패'}` });
+    }
+  }
+
+  /**
+   * @description 클랜 매치 카운트 조회
+   */
+  async handleGetClanMatchCount(interaction, our_clan_role_id, opponent_clan_role_id) {
+    try {
+
+      const count = await this.service.getClanMatchCount(our_clan_role_id, opponent_clan_role_id);
+      return count.data.meeting_count || 0; 
+
+    } catch (err) {
+      console.error('클랜 매치 카운트 조회 실패:', err);
+      return interaction.editReply({ content: `❌ ${err?.message || '클랜 매치 카운트 조회 실패'}` });
     }
   }
 

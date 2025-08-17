@@ -29,4 +29,11 @@ async function removeOpenRoleIfNoOpen(client, guildId, ownerId) {
   } catch (err){ console.error('removeOpenRoleIfNoOpen error:', err); }
 }
 
-module.exports = { removeOpenRoleIfNoOpen };
+async function getClanRoleIdByUserId(guild, userId) {
+  if (!guild) throw new Error('guild가 없습니다');
+  const member = await guild.members.fetch(userId); // 멤버 fetch (Intents.GuildMembers 필요)
+  const clanRole = member.roles.cache.find(r => r.name.startsWith('clan_'));
+  return clanRole ? clanRole.id : null; // 없으면 null
+}
+
+module.exports = { removeOpenRoleIfNoOpen, getClanRoleIdByUserId };

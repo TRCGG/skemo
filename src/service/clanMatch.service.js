@@ -63,8 +63,6 @@ class ClanMatchService {
       return { empty: true, content: '조회된 클랜 매치 데이터가 없습니다.' };
     }
 
-    console.log('클랜 매치 조회 결과:', res);
-
     // getClanMatchEmbed 유틸을 그대로 사용
     const embed = getClanMatchEmbed(res.data, our_clan_name);
     return { empty: false, embed };
@@ -74,7 +72,7 @@ class ClanMatchService {
    * @description 클랜 매치 카운트 조회
    */
   async getClanMatchCount(our_clan_role_id, opponent_clan_role_id) {
-    if (!isNonEmptyStr(our_clan_role_id) || !opponent_clan_role_id) {
+    if (!our_clan_role_id || !opponent_clan_role_id) {
       throw new Error('our_clan_role_id와 opponent_clan_role_id는 필수입니다.');
     }
     
