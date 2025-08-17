@@ -64,7 +64,7 @@ const getClanMatchEmbed = (clanData, our_clan_name) => {
             : "최근 전적이 없습니다.",
       }
     )
-    .setFooter({ text: "클랜 전적은 clan_match 기준입니다." });
+    // .setFooter({ text: "클랜 전적은 clan_match 기준입니다." });
   return embed;
 }
 

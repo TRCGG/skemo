@@ -59,7 +59,9 @@ module.exports = {
       const ts = Math.floor(Number(it.createdAt || Date.now()) / 1000); // 디스코드 타임스탬프
       const owner = it.ownerId ? `<@${it.ownerId}>` : "알 수 없음";
       const title = it.title ? ` - ${it.title}` : "";
-      lines.push(`${owner}${title} — [모집글 보기](${link}) 🕒 <t:${ts}:t>`);
+      const etc = it.etc ? `(${it.etc})` : "";
+      const time = it.time ? `${it.time}` : "";
+      lines.push(`${owner}${title}${etc} 가능시간: ${time} — [모집글 보기](${link})  🕒 <t:${ts}:t>`);
     }
 
     return interaction.reply({
