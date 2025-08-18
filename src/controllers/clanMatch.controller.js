@@ -123,7 +123,6 @@ class ClanMatchController {
 
     } catch (err) {
       console.error('클랜 매치 카운트 조회 실패:', err);
-      return interaction.editReply({ content: `❌ ${err?.message || '클랜 매치 카운트 조회 실패'}` });
     }
   }
 

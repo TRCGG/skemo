@@ -85,7 +85,7 @@ module.exports = async (interaction) => {
         : null;
 
       await msg.edit({
-        content: `🎉 매칭이 확정되었습니다.${confirmTime ? `\n🕒 확정 시간: ${confirmTime}` : ''}\n⚔️ ${matchCount}번째 매치`,
+        content: `🎉 매칭이 확정되었습니다.${confirmTime ? `\n🕒 확정 시간: ${confirmTime}` : ''} ${matchCount? `\n⚔️ ${matchCount}번째 매치` : '' }`,
         components: disabledRow ? [disabledRow] : [],
       });
 
@@ -115,7 +115,7 @@ module.exports = async (interaction) => {
           .setStyle(ButtonStyle.Danger);
 
         await announceChannel.send({
-          content: `✅ **스크림 매칭이 확정되었습니다!**${confirmTime ? `\n🕒 ${confirmTime}` : ''}\n⚔️ ${matchCount}번째 매치`,
+          content: `✅ **스크림 매칭이 확정되었습니다!**${confirmTime ? `\n🕒 ${confirmTime}` : ''} ${matchCount? `\n⚔️ ${matchCount}번째 매치` : '' }`,
           embeds: [vsEmbed],
           components: [new ActionRowBuilder().addComponents(cancelBtn)],
         });

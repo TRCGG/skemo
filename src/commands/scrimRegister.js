@@ -30,13 +30,22 @@ module.exports = {
     .addStringOption(o => o.setName('nowtier5').setDescription('서폿_현재_티어_5').setRequired(true))
     .addStringOption(o => o.setName('prevtier5').setDescription('서폿_이전_최고 티어_5').setRequired(true))
     .addStringOption(o => o.setName('time').setDescription('가능 시간대').setRequired(true))
-    .addStringOption(o => o.setName('etc').setDescription('피리어스 여부 혹은 기타').setRequired(false)),
+    .addStringOption(o => o.setName('etc').setDescription('피리어스 여부 혹은 기타 규칙').setRequired(false)),
 
   async execute(interaction) {
     try {
       const ownerId = interaction.user.id;
       const guildId = interaction.guildId;
       const author = interaction.user;
+
+      // 본인 역할 중 clan_ 역할이 있는지 확인
+      const clanRole = interaction.member.roles.cache.find(role => role.name.startsWith('clan_'));
+      if (!clanRole) {
+        return interaction.reply({
+          content: '❌ 클랜 역할이 없습니다. 관리자에게 문의 해주세요.',
+          flags: 64, 
+        });
+      }
 
       // 최대 3개 제한
       const myScrims = scrimStore.findByOwner(ownerId);
